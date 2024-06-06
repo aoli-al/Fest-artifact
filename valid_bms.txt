@@ -1,0 +1,12 @@
+open/2PC/2_TwoPhaseCommit TwoPhaseCommitMultipleClientsNoFailure -tc tcMultipleClientsNoFailure
+open/2PC/2_TwoPhaseCommit TwoPhaseCommitSingleClientNoFailureMoreData -tc tcSingleClientNoFailureMoreData
+open/2PC/2_TwoPhaseCommit TwoPhaseCommitMultipleClientsNoFailureMoreData -tc tcMultipleClientsNoFailureMoreData
+open/2PC/2_TwoPhaseCommit TwoPhaseCommitSingleClientNoFailureMoreParticipants -tc tcSingleClientNoFailureMoreParticipants
+open/2PC/2_TwoPhaseCommit TwoPhaseCommitMultipleClientsNoFailureMoreParticipants -tc tcMultipleClientsNoFailureMoreParticipants
+open/2PC/2_TwoPhaseCommit TwoPhaseCommitSingleClientNoFailure -tc tcSingleClientNoFailure
+open/German German
+open/OSR OSR
+open/I4/Paxos/paxosV2 paxosV2
+open/I4/Paxos/paxosV3 paxosV3
+open/I4/Paxos/paxosV5 paxosV5
+open/I4/Paxos/paxosV5_no_requires paxosV5norequires

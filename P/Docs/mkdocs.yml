@@ -1,0 +1,133 @@
+site_name: "P"
+site_url: http://p-org.github.io/P/
+site_description: "P: Modular and Safe Programming of Distributed Systems"
+site_author: "Ankush Desai"
+
+repo_url: https://github.com/p-org/P
+repo_name: P on Github
+edit_uri: ""
+
+theme:
+  language: en
+  name: material
+  palette:
+    scheme: default
+    primary: black
+    accent: deep orange
+  logo: ./icon.png
+  favicon: ./icon.png
+  icon:
+    repo: fontawesome/brands/github
+    admonition:
+      note: octicons/tag-16
+      abstract: octicons/checklist-16
+      info: octicons/info-16
+      tip: octicons/squirrel-16
+      success: octicons/check-16
+      question: octicons/question-16
+      warning: octicons/alert-16
+      failure: octicons/x-circle-16
+      danger: octicons/zap-16
+      bug: octicons/bug-16
+      example: octicons/beaker-16
+      quote: octicons/quote-16
+  features:
+    - navigation.instant
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.tracking
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.tabs.link
+    - toc.follow
+
+# This should be renamed to nav for mkdocs 1.0+
+nav:
+  - Home: index.md
+  - What is P?: whatisP.md
+  - Getting Started:
+      - Installing P: getstarted/install.md
+      - Peasy - IDE for P: getstarted/PeasyIDE.md
+      - Using P Compiler and Checker: getstarted/usingP.md
+
+  - Tutorials:
+      - Outline: tutsoutline.md
+      - Client Server: tutorial/clientserver.md
+      - Two Phase Commit: tutorial/twophasecommit.md
+      - Espresso Machine: tutorial/espressomachine.md
+      - Failure Detector: tutorial/failuredetector.md
+      # - Paxos Made Simple: tutorial/paxos.md
+      - Timer, Failure, and Shared Memory: tutorial/common.md
+  - Advanced User Guide:
+      - P Semantics: advanced/psemantics.md
+      - Importance of Liveness Specifications: advanced/importanceliveness.md
+      - Structure of a P Program: advanced/structureOfPProgram.md
+      - P Project File: advanced/PProject.md
+      - Debugging Error Traces (counter examples): advanced/debuggingerror.md
+#      - PSym:
+#        - What is PSym?: advanced/psym/whatisPSym.md
+#        - Installing PSym: advanced/psym/install.md
+#        - Using PSym: advanced/psym/usingPSym.md
+  - Language Manual:
+      - P Program (Outline): manualoutline.md
+      - P DataTypes: manual/datatypes.md
+      - P Events: manual/events.md
+      - P State Machines: manual/statemachines.md
+      - P Monitors: manual/monitors.md
+      - P Functions: manual/functions.md
+      - P Expressions: manual/expressions.md
+      - P Statements: manual/statements.md
+      - P Module System: manual/modulesystem.md
+      - P Test cases: manual/testcases.md
+      - P Foreign Interface: manual/foriegntypesfunctions.md
+  - Case Studies: casestudies.md
+  - Videos: videos.md
+  - Publications: publications.md
+  - Contributing to P:
+      - Building from Source: getstarted/build.md
+
+markdown_extensions:
+  - attr_list
+  - md_in_html
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.snippets
+  - admonition
+  - pymdownx.tabbed
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.critic
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - footnotes
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+
+
+plugins:
+  - search:
+      separator: '[\s\-\.]+'
+
+extra:
+  social:
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/_planguage
+      name: P on Twitter
+    - icon: fontawesome/solid/paper-plane
+      link: mailto:ankushdesai@gmail.com
+      name: Contact P Team
+  analytics:
+    provider: google
+    property: G-0WWG87T6BN
+
+copyright: Copyright &copy; 2023 P Developers

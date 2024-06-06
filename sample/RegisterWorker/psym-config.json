@@ -1,0 +1,8 @@
+{
+    "symmetric-machines": {
+        "help"    : "Names of symmetric machine types",
+        "default" : [
+            "Worker"
+        ]
+    }
+}

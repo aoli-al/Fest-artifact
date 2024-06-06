@@ -1,0 +1,9 @@
+<!-- P project file for the register worker protocol -->
+<Project>
+<ProjectName>RegisterWorker</ProjectName>
+<InputFiles>
+    <PFile>./PSrc/</PFile>
+    <PFile>./PTst/</PFile>
+</InputFiles>
+<OutputDir>./PGenerated/</OutputDir>
+</Project>

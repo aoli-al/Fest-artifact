@@ -1,0 +1,8 @@
+<Project>
+<ProjectName>pingPongForeign1</ProjectName>
+<InputFiles>
+	<PFile>./PSrc/</PFile>
+	<PFile>./PForeign/</PFile>
+</InputFiles>
+<OutputDir>./PGenerated/</OutputDir>
+</Project>
