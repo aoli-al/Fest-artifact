@@ -3,13 +3,16 @@
 > Searching the commit history of P could potentially reveal our identity.
 
 
-- - `P` folder contains the implementation of Fest
+- `P` folder contains the implementation of Fest
     - `Src/PChecker/CheckerCore/SystematicTesting/Strategies/Feedback` contains the implementation of feedback guided schedule generation algorithm.
     - `Src/PChecker/CheckerCore/SystematicTesting/Strategies/Probabilistic` contains the extension of existing bounded-concurrency testing algorithms (POS, POS+)
     - `Src/PCompiler/CompilerCore/Parser/PParser.g4` contains the implementation of our scenario specifcation language
     - `Src/PCompiler/CompilerCore/Backend/CSharp/CSharpCodeGenerator.cs` converts scenarios to constraints
+- We intend to make Fest public after the paper is accepted and plan to submit Fest to the upstream P-framework.
+- We have shared the open-sourced models we used in our evaluation. Unfortunately, we cannot share the internal distributed system models due to company policies.
 - `open` contains the open-source P models.
 - To run Fest on the open source models, you can use the script 
+    - Please follow the upstream [guidance](https://p-org.github.io/P/getstarted/install/) to build the P framework.
     - `python3 run_benchmark.py` 
     - For each test case, the script run 11 different techniques for 3 hour with 5 repetitions.
         - PCT3, PCT15, PCT50
