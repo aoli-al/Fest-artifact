@@ -19,7 +19,7 @@ TECH = {
 }
 
 HOME = os.path.expanduser('~')
-P_BASE = f"{SCRIPT_DIR}/P/Bld/Drops/Release/Binaries/net8.0/p.dll"
+P_BASE = f"{SCRIPT_DIR}/Fest/Bld/Drops/Release/Binaries/net8.0/p.dll"
 
 
 def populate_configs():
