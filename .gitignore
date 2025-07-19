@@ -25,3 +25,5 @@ runs/
 ._*
 stats/*
 !stats/common/
+
+bench_results

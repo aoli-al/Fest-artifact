@@ -54,8 +54,6 @@ namespace PChecker.Coverage
             Machines = new HashSet<string>();
             MachinesToStates = new Dictionary<string, HashSet<string>>();
             RegisteredEvents = new Dictionary<string, HashSet<string>>();
-            EventInfo = new EventCoverage();
-            CoverageGraph = new Graph();
         }
 
         /// <summary>

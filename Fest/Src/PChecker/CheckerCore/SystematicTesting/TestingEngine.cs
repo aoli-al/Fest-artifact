@@ -113,24 +113,8 @@ namespace PChecker.SystematicTesting
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true,
-            Converters = { new EncodingConverter() }
+            WriteIndented = true
         };
-
-        internal class EncodingConverter : JsonConverter<Encoding>
-        {
-            public override Encoding Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            {
-                var name = reader.GetString();
-                if (name == null)
-                    return null;
-                return Encoding.GetEncoding(name);
-            }
-            public override void Write(Utf8JsonWriter writer, Encoding value, JsonSerializerOptions options)
-            {
-                writer.WriteStringValue(value.WebName);
-            }
-        }
 
         /// <summary>
         /// The profiler.
@@ -767,18 +751,12 @@ namespace PChecker.SystematicTesting
             {
                 return "null";
             }
-            if (obj is Dictionary<string, object> dictionaryStr) {
+
+            if (obj is Dictionary<string, object> dictionary)
+            {
                 var newDictionary = new Dictionary<string, object>();
-                foreach (var item in dictionaryStr) {
-                    var newVal = RecursivelyReplaceNullWithString(item.Value);
-                    if (newVal != null)
-                        newDictionary[item.Key] = newVal;
-                }
-                return newDictionary;
-            }
-            else if (obj is Dictionary<int, object> dictionaryInt) {
-                var newDictionary = new Dictionary<int, object>();
-                foreach (var item in dictionaryInt) {
+                foreach (var item in dictionary)
+                {
                     var newVal = RecursivelyReplaceNullWithString(item.Value);
                     if (newVal != null)
                         newDictionary[item.Key] = newVal;
@@ -1038,9 +1016,8 @@ namespace PChecker.SystematicTesting
                 var coverageInfo = runtime.GetCoverageInfo();
                 report.CoverageInfo.Merge(coverageInfo);
                 TestReport.Merge(report);
-                var timelineHash = timelineObserver.GetTimelineHash();
-                TestReport.ExploredTimelines[timelineHash] =
-                    TestReport.ExploredTimelines.GetValueOrDefault(timelineHash, 0) + 1;
+
+                TestReport.ExploredTimelines.Add(timelineObserver.GetTimelineHash());
                 // Also save the graph snapshot of the last iteration, if there is one.
                 Graph = coverageInfo.CoverageGraph;
                 // Also save the graph snapshot of the last schedule, if there is one.

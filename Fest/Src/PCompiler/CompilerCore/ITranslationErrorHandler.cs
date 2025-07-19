@@ -117,7 +117,5 @@ namespace Plang.Compiler
 
         Exception IllegalChooseSubExprType(PParser.ChooseExprContext context, PLanguageType subExprType);
         Exception IllegalFunctionUsedInSpecMachine(Function function, Machine callerOwner);
-
-        String SpecObservesSetIncompleteWarning(ParserRuleContext loc, PEvent ev, Machine machine);
     }
 }

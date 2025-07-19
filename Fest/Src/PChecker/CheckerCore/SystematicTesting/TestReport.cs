@@ -105,7 +105,7 @@ namespace PChecker.SystematicTesting
         /// Set of hashes of timelines discovered by the scheduler.
         /// </summary>
         [DataMember]
-        public Dictionary<int, int> ExploredTimelines = new();
+        public HashSet<int> ExploredTimelines = new();
 
         /// <summary>
         /// Number of schedulings that satisfies the pattern.
