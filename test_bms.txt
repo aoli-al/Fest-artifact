@@ -1,1 +1,0 @@
-benchmarks/2PC/2_TwoPhaseCommit TwoPhaseCommitMultipleClientsNoFailure -tc tcMultipleClientsNoFailure

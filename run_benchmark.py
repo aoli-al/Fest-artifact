@@ -9,13 +9,13 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 TECH = {
     "rl": ["origin"],
     "pct15": ["origin"],
-    "feedbackpct15": ["origin", "origin-no-scen"],
+    "feedbackpct15": ["origin", "origin-no-prio"],
     "pct3": ["origin"],
     "pct50": ["origin"],
     "pos": ["origin", "conflict-analysis"],
-    "feedbackpct3": ["origin", "origin-no-scen"],
-    "feedbackpct50": ["origin", "origin-no-scen"],
-    "feedbackpos": ["origin", "conflict-analysis", "origin-no-scen", "ca-no-scen"],
+    "feedbackpct3": ["origin", "origin-no-prio"],
+    "feedbackpct50": ["origin", "origin-no-prio"],
+    "feedbackpos": ["origin", "conflict-analysis", "origin-no-prio"],
 }
 
 HOME = os.path.expanduser('~')
@@ -26,8 +26,7 @@ def populate_configs():
     return {
         "origin": [],
         "conflict-analysis": ["--conflict-analysis"],
-        "origin-no-scen": ["--ignore-pattern"],
-        "ca-no-scen": ["--conflict-analysis", "--ignore-pattern"]
+        "origin-no-prio": ["--no-priority-based"],
     }
 
 def create_configs(out_dir, num_of_iter, time, bm_path):
