@@ -29,6 +29,9 @@ We do **not** claim the **Results Reproduced** badge as this artifact does not i
 
 - You may also use the pre-configured container image that includes all the dependencies and tools to run the evaluation.
 
+```
+podman run -it leeleo3x/fest-artifact bash
+```
 
 ## Build the Project
 
