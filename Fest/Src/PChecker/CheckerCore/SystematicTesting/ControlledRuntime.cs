@@ -66,7 +66,6 @@ namespace PChecker.SystematicTesting
         /// </summary>
         internal readonly int? RootTaskId;
 
-
         /// <summary>
         /// Returns the current hashed state of the monitors.
         /// </summary>
@@ -426,8 +425,7 @@ namespace PChecker.SystematicTesting
         }
 
         /// <inheritdoc/>
-        internal override async Task<bool> SendEventAndExecuteAsync(ActorId targetId, Event e, Actor sender,
-            Guid opGroupId)
+        internal override async Task<bool> SendEventAndExecuteAsync(ActorId targetId, Event e, Actor sender, Guid opGroupId)
         {
             Assert(sender is StateMachine, "Only an actor can call 'SendEventAndExecuteAsync': avoid " +
                                            "calling it directly from the test method; instead call it through a test driver actor.");
@@ -521,6 +519,7 @@ namespace PChecker.SystematicTesting
 
             LogWriter.LogSendEvent(actor.Id, sender?.Id.Name, sender?.Id.Type, stateName,
                 e, opGroupId, isTargetHalted: false);
+
             return actor.Enqueue(e, opGroupId, eventInfo);
         }
 

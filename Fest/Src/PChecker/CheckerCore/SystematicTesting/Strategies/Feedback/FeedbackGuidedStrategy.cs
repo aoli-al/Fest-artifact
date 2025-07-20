@@ -32,7 +32,11 @@ internal class FeedbackGuidedStrategy<TInput, TSchedule> : IFeedbackGuidedStrate
     private HashSet<GeneratorRecord> _visitedGenerators = new HashSet<GeneratorRecord>();
     private GeneratorRecord? _currentParent = null;
 
+    private readonly bool _savePartialMatch;
+    private readonly bool _diversityBasedPriority;
+    private readonly bool _ignorePatternFeedback;
     private readonly int _discardAfter;
+    private readonly bool _priorityBasedSampling;
     private System.Random _rnd = new System.Random();
 
 
@@ -51,7 +55,11 @@ internal class FeedbackGuidedStrategy<TInput, TSchedule> : IFeedbackGuidedStrate
             _maxScheduledSteps = checkerConfiguration.MaxFairSchedulingSteps;
         }
         Generator = new StrategyGenerator(input, schedule);
+        _savePartialMatch = checkerConfiguration.SavePartialMatch;
+        _diversityBasedPriority = checkerConfiguration.DiversityBasedPriority;
         _discardAfter = checkerConfiguration.DiscardAfter;
+        _ignorePatternFeedback = checkerConfiguration.IgnorePatternFeedback;
+        _priorityBasedSampling = checkerConfiguration.PriorityBasedSampling;
     }
 
     /// <inheritdoc/>
@@ -129,7 +137,12 @@ internal class FeedbackGuidedStrategy<TInput, TSchedule> : IFeedbackGuidedStrate
             return 0;
         }
 
-        if (_savedGenerators.Count == 0)
+        if (!_priorityBasedSampling)
+        {
+            return 20;
+        }
+
+        if (_savedGenerators.Count == 0 || !_diversityBasedPriority)
         {
             return 20;
         }
@@ -170,15 +183,18 @@ internal class FeedbackGuidedStrategy<TInput, TSchedule> : IFeedbackGuidedStrate
         }
 
         int priority = 0;
-        if (patternObserver == null)
+        if (patternObserver == null || _ignorePatternFeedback || !_priorityBasedSampling)
         {
             priority = diversityScore;
         }
         else
         {
             int coverageResult = patternObserver.ShouldSave();
-            double coverageScore = 1.0 / coverageResult;
-            priority = (int)(diversityScore * coverageScore);
+            if (coverageResult == 1 || _savePartialMatch)
+            {
+                double coverageScore = 1.0 / coverageResult;
+                priority = (int)(diversityScore * coverageScore);
+            }
         }
 
         if (priority > 0)
@@ -205,7 +221,7 @@ internal class FeedbackGuidedStrategy<TInput, TSchedule> : IFeedbackGuidedStrate
                 _savedGenerators.Insert(index, record);
             }
 
-            if (_savedGenerators.Count > _discardAfter)
+            if (_priorityBasedSampling && _savedGenerators.Count > _discardAfter)
             {
                 var last = _savedGenerators.Last();
                 _visitedGenerators.Remove(last);
@@ -229,10 +245,17 @@ internal class FeedbackGuidedStrategy<TInput, TSchedule> : IFeedbackGuidedStrate
         }
         else
         {
+            if (!_priorityBasedSampling && _pendingMutations == 0)
+            {
+                _currentParent = _savedGenerators[_rnd.Next(_savedGenerators.Count)];
+                _pendingMutations = 1;
+            }
+
             if (_currentParent == null && !_shouldExploreNew)
             {
                 _currentParent = _savedGenerators.First();
                 _visitedGenerators.Add(_currentParent);
+                _pendingMutations = _currentParent.Priority;
                 _pendingMutations = 50;
             }
 
@@ -245,24 +268,26 @@ internal class FeedbackGuidedStrategy<TInput, TSchedule> : IFeedbackGuidedStrate
                     if (_visitedGenerators.Contains(generator)) continue;
                     _currentParent = generator;
                     _visitedGenerators.Add(generator);
+                    _pendingMutations = generator.Priority;
                     _pendingMutations = 50;
                     found = true;
                 }
 
                 if (!found)
                 {
-                    if (_rnd.NextDouble() < 0.5)
-                    {
-                        _visitedGenerators.Clear();
-                        _currentParent = _savedGenerators.First();
-                        _visitedGenerators.Add(_currentParent);
-                    }
-                    else
-                    {
-                        _shouldExploreNew = true;
-                        _currentParent = null;
-                    }
-                    _pendingMutations = 50;
+                    // if (_rnd.NextDouble() < 0.5)
+                    // {
+                    _visitedGenerators.Clear();
+                    _currentParent = _savedGenerators.First();
+                    _visitedGenerators.Add(_currentParent);
+                    _pendingMutations = _currentParent.Priority;
+                    // }
+                    // else
+                    // {
+                    // _shouldExploreNew = true;
+                    // _currentParent = null;
+                    // }
+                    // _pendingMutations = 50;
                 }
             }
 

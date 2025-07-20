@@ -65,15 +65,11 @@ namespace PChecker.SystematicTesting
         /// </summary>
         internal readonly ISchedulingStrategy Strategy;
 
-        /// <summary>
-        /// Pattern coverage observer if pattern is provided
-        /// </summary>
         private EventPatternObserver? _eventPatternObserver;
 
-        /// <summary>
-        /// Monitors conflict operations used by the POS Strategy.
-        /// </summary>
         private ConflictOpMonitor? _conflictOpObserver;
+
+        private AbstractScheduleObserver? _abstractScheduleObserver;
 
         /// <summary>
         /// Random value generator used by the scheduling strategies.
@@ -306,7 +302,7 @@ namespace PChecker.SystematicTesting
                 JsonVerboseLogs = new List<List<LogEntry>>();
             }
 
-            if (checkerConfiguration.EnableConflictAnalysis)
+            if (checkerConfiguration.EnableConflictAnalysis || checkerConfiguration.SchedulingStrategy == "rff")
             {
                 _conflictOpObserver = new ConflictOpMonitor();
             }
@@ -328,10 +324,24 @@ namespace PChecker.SystematicTesting
                 Strategy = new PrioritizedSchedulingStrategy(checkerConfiguration.MaxUnfairSchedulingSteps,
                     RandomValueGenerator, scheduler);
             }
+            else if (checkerConfiguration.SchedulingStrategy is "pctcp")
+            {
+                var scheduler = new PCTCPScheduler(checkerConfiguration.StrategyBound, 0,
+                    new RandomPriorizationProvider(RandomValueGenerator));
+                Strategy = new PrioritizedSchedulingStrategy(checkerConfiguration.MaxUnfairSchedulingSteps,
+                    RandomValueGenerator, scheduler);
+            }
             else if (checkerConfiguration.SchedulingStrategy is "pos")
             {
                 var scheduler = new POSScheduler(new RandomPriorizationProvider(RandomValueGenerator),
                     _conflictOpObserver);
+                Strategy = new PrioritizedSchedulingStrategy(checkerConfiguration.MaxUnfairSchedulingSteps,
+                    RandomValueGenerator, scheduler);
+            }
+            else if (checkerConfiguration.SchedulingStrategy is "rff")
+            {
+                _abstractScheduleObserver = new AbstractScheduleObserver();
+                var scheduler = new RFFScheduler(RandomValueGenerator, _conflictOpObserver, _abstractScheduleObserver);
                 Strategy = new PrioritizedSchedulingStrategy(checkerConfiguration.MaxUnfairSchedulingSteps,
                     RandomValueGenerator, scheduler);
             }
@@ -365,10 +375,22 @@ namespace PChecker.SystematicTesting
                     _checkerConfiguration, new RandomInputGenerator(checkerConfiguration),
                     new RandomScheduleGenerator(checkerConfiguration));
             }
+            else if (checkerConfiguration.SchedulingStrategy is "2stagefeedback")
+            {
+                Strategy = new TwoStageFeedbackStrategy<RandomInputGenerator, RandomScheduleGenerator>(
+                    _checkerConfiguration, new RandomInputGenerator(checkerConfiguration),
+                    new RandomScheduleGenerator(checkerConfiguration));
+            }
             else if (checkerConfiguration.SchedulingStrategy is "feedbackpct")
             {
                 Strategy = new FeedbackGuidedStrategy<RandomInputGenerator, PctScheduleGenerator>(_checkerConfiguration,
                     new RandomInputGenerator(checkerConfiguration), new PctScheduleGenerator(checkerConfiguration));
+            }
+            else if (checkerConfiguration.SchedulingStrategy is "feedbackpctcp")
+            {
+                Strategy = new FeedbackGuidedStrategy<RandomInputGenerator, PctcpScheduleGenerator>(
+                    _checkerConfiguration, new
+                        RandomInputGenerator(checkerConfiguration), new PctcpScheduleGenerator(checkerConfiguration));
             }
             else if (checkerConfiguration.SchedulingStrategy is "feedbackpos")
             {
@@ -376,6 +398,12 @@ namespace PChecker.SystematicTesting
                     _checkerConfiguration,
                     new RandomInputGenerator(checkerConfiguration),
                     new POSScheduleGenerator(_checkerConfiguration, _conflictOpObserver));
+            }
+            else if (checkerConfiguration.SchedulingStrategy is "2stagefeedbackpct")
+            {
+                Strategy = new TwoStageFeedbackStrategy<RandomInputGenerator, PctScheduleGenerator>(
+                    _checkerConfiguration, new RandomInputGenerator(checkerConfiguration),
+                    new PctScheduleGenerator(checkerConfiguration));
             }
             else if (checkerConfiguration.SchedulingStrategy is "portfolio")
             {
@@ -565,6 +593,23 @@ namespace PChecker.SystematicTesting
                     _conflictOpObserver.VectorClockGenerator = JsonLogger.VcGenerator;
                     runtime.RegisterLog(_conflictOpObserver);
                 }
+
+                if (_abstractScheduleObserver != null)
+                {
+                    runtime.RegisterLog(_abstractScheduleObserver);
+                }
+
+                if (Strategy is FeedbackGuidedStrategy<RandomInputGenerator, PctcpScheduleGenerator>
+                    feedbackGuidedStrategy)
+                {
+                    feedbackGuidedStrategy.Generator.ScheduleGenerator.vcGenerator = JsonLogger.VcGenerator;
+                }
+
+                if (Strategy is PrioritizedSchedulingStrategy prioritizedScheduler && prioritizedScheduler.Scheduler
+                        is PCTCPScheduler pctcpScheduler)
+                {
+                    pctcpScheduler.vcGenerator = JsonLogger.VcGenerator;
+                }
         }
 
         /// <summary>
@@ -586,7 +631,7 @@ namespace PChecker.SystematicTesting
             // Runtime used to serialize and test the program in this schedule.
             ControlledRuntime runtime = null;
 
-            TimelineObserver timelineObserver = new TimelineObserver();
+            TimelineObserver timelineObserver = new TimelineObserver(_checkerConfiguration.ObservingEvents);
 
             // Logger used to intercept the program output if no custom logger
             // is installed and if verbosity is turned off.
