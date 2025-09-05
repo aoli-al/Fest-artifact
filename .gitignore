@@ -17,7 +17,6 @@ portfolio.out
 *.err
 
 Test.cs
-*.csproj
 *.iml
 
 runs/
