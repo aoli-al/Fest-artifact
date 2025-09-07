@@ -16,6 +16,11 @@
             jdk11
             maven
             python313
+            python313Packages.pandas
+            python313Packages.seaborn
+            python313Packages.matplotlib
+            python313Packages.numpy
+            jupyter
           ];
         };
       });

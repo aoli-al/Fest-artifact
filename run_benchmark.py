@@ -9,13 +9,13 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 TECH = {
     "rl": ["origin"],
     "pct15": ["origin"],
-    "feedbackpct15": ["origin", "origin-no-prio"],
+    "feedbackpct15": ["origin"],
     "pct3": ["origin"],
     "pct50": ["origin"],
     "pos": ["origin", "conflict-analysis"],
-    "feedbackpct3": ["origin", "origin-no-prio"],
-    "feedbackpct50": ["origin", "origin-no-prio"],
-    "feedbackpos": ["origin", "conflict-analysis", "origin-no-prio"],
+    "feedbackpct3": ["origin"],
+    "feedbackpct50": ["origin"],
+    "feedbackpos": ["origin", "conflict-analysis"],
 }
 
 HOME = os.path.expanduser('~')
@@ -55,8 +55,8 @@ def create_configs(out_dir, num_of_iter, time, bm_path):
                         if os.path.exists(out_path):
                             with open(out_path) as f:
                                 txt = f.read()
-                                #  if "... Elapsed " + str(time) in txt:
-                                    #  continue
+                                 # if "... Elapsed " + str(time) in txt:
+                                 #     continue
                         shutil.rmtree(work_dir, ignore_errors=True)
                         if "pct" in tech:
                             offset = 3
@@ -88,9 +88,9 @@ def run_test(args):
 def main():
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument("--out_dir", default="bench_results")
-    parser.add_argument("--time", default=3 * 60 * 60, type=int)
-    parser.add_argument("--iter", default=5, type=int)
-    parser.add_argument("--cpus", default=80, type=int)
+    parser.add_argument("--time", default=60 * 10, type=int)
+    parser.add_argument("--iter", default=1, type=int)
+    parser.add_argument("--cpus", default=11, type=int)
     parser.add_argument("--bm_path", default="valid_bms.txt")
     args = parser.parse_args()
     with Pool(processes=args.cpus) as pool:
